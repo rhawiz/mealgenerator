@@ -1,5 +1,8 @@
 import random
 
+import math
+
+from ingredient import Ingredient
 from load_data import load_ingredients
 
 
@@ -57,13 +60,16 @@ class Meal:
 
         total_cals = fat_cals + carb_cals + protein_cals
 
-        fat_score = 1.0 - float(abs(1.0 - (fat_cals / req_fat_cals)))
-        carb_score = 1.0 - float(abs(1.0 - (carb_cals / req_carb_cals)))
-        protein_score = 1.0 - float(abs(1.0 - (protein_cals / req_protein_cals)))
+        # fat_score = float(abs(1.0 - (fat_cals / req_fat_cals)))
+        # carb_score = float(abs(1.0 - (carb_cals / req_carb_cals)))
+        # protein_score =  float(abs(1.0 - (protein_cals / req_protein_cals)))
 
-        cal_score = 1.0 - float(abs(1.0 - (total_cals / req_calories))) * 2.0
+        fat_score = abs(fat_cals - req_fat_cals) * 1.0
+        carb_score = abs(carb_cals - req_carb_cals) * 1.0
+        protein_score = abs(protein_cals - req_protein_cals) * 1.0
+        cal_score = abs(total_cals - req_calories) * 2.0
 
-        score = float((fat_score + carb_score + protein_score + cal_score))
+        score = 4 * 10000 / (float(fat_score + carb_score + protein_score + cal_score))
 
         return score
 
@@ -73,12 +79,14 @@ if __name__ == "__main__":
     n = 5
     random.shuffle(data)
 
-    meals = []
+    p = Ingredient("BEST","cat",2492,208,92,208)
+    Meal([p])
+    meals = [Meal([p])]
 
     for i in range(0, 1000, n):
         ingredients = data[i:i + n]
         meals.append(Meal(ingredients))
-
+    print "{}\t{}\t{}\t{}\t{}".format("calories", "carbs", "fats", "protein", "score")
     for meal in meals:
         print "{0}\t{1} ({2:.2f}%)\t{3} ({4:.2f}%)\t{5} ({6:.2f}%)\t{7:.2f}".format(
             meal.total_calories(),

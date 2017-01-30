@@ -4,10 +4,10 @@ class GA:
 
 
 
-    def crossover(self, meal1, meal2):
+    def crossover(self, x, y):
         pass
 
-    def mutate(self, meal):
+    def mutate(self, x):
         pass
 
     def tournament_selection(self, population):
