@@ -3,7 +3,7 @@ from ingredient import Ingredient
 
 
 def load_ingredients():
-    sql = 'SELECT * FROM nutritiondata ORDER BY random()'
+    sql = "SELECT * FROM nutritiondata WHERE category not in ('baby_foods','fats_oils')"
     db_path = "nutritiondata.sqlite"
     data = execute_query(db_path, sql)
     ingredients = []

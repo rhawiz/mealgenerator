@@ -27,4 +27,4 @@ class Ingredient:
         return self.protein
 
     def __str__(self):
-        return self.name
+        return "{}\t{}\t{}\t{}".format(self.name, self.protein, self.fat, self.carbohydrate)

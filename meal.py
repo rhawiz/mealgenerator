@@ -42,36 +42,70 @@ class Meal:
 
         return total_fat
 
-    def __str__(self):
-        out = ''
-        for i in ingredients:
-            out += i.__str__() + "\n"
+    def list_ingredients(self):
+        out = ""
+        for i in self.ingredients:
+            out += "{}\n".format(i.__str__())
         return out
 
-    def fitness(self, carb_ratio=0.333333, fat_ratio=0.33333, protein_ratio=0.33333, req_calories=2500):
+    def __str__(self):
+        return "{0}\t{1} ({2:.2f}%)\t{3} ({4:.2f}%)\t{5} ({6:.2f}%)".format(
+            self.total_calories(),
+            self.total_carbohydrate(), float((self.total_carbohydrate() * 4) / self.total_calories() * 100),
+            self.total_fat(), float((self.total_fat() * 9) / self.total_calories() * 100),
+            self.total_protein(), float((self.total_protein() * 4) / self.total_calories() * 100)
+        )
+        # def crossover(self, male):
+        #     assert isinstance(male, Meal)
+        #
+        #     male_genes = [i for i in male.ingredients[:len(male.ingredients)/2]]
+        #     female_genes = [i for i in self.ingredients[len(self.ingredients)/2:]]
+        #     child_ingredients = male_genes + female_genes
+        #     child = Meal(ingredients=child_ingredients)
+        #
+        #     return child
+        #
+        #
+        # def fitness(self, carb_ratio=0.333333, fat_ratio=0.33333, protein_ratio=0.33333, req_calories=2500):
+        #
+        #     fat_cals = float((self.total_fat() * 9))
+        #     carb_cals = float((self.total_carbohydrate() * 4))
+        #     protein_cals = float((self.total_protein() * 4))
+        #
+        #     req_fat_cals = req_calories * fat_ratio
+        #     req_carb_cals = req_calories * carb_ratio
+        #     req_protein_cals = req_calories * protein_ratio
+        #
+        #     total_cals = fat_cals + carb_cals + protein_cals
+        #
+        #     # fat_score = float(abs(1.0 - (fat_cals / req_fat_cals)))
+        #     # carb_score = float(abs(1.0 - (carb_cals / req_carb_cals)))
+        #     # protein_score =  float(abs(1.0 - (protein_cals / req_protein_cals)))
+        #
+        #     fat_score = abs(fat_cals - req_fat_cals) * 1.0
+        #     carb_score = abs(carb_cals - req_carb_cals) * 1.0
+        #     protein_score = abs(protein_cals - req_protein_cals) * 1.0
+        #     cal_score = abs(total_cals - req_calories) * 2.0
+        #
+        #     score = 4 * 10000 / (float(fat_score + carb_score + protein_score + cal_score))
+        #
+        #     return score
 
-        fat_cals = float((self.total_fat() * 9))
-        carb_cals = float((self.total_carbohydrate() * 4))
-        protein_cals = float((self.total_protein() * 4))
 
-        req_fat_cals = req_calories * fat_ratio
-        req_carb_cals = req_calories * carb_ratio
-        req_protein_cals = req_calories * protein_ratio
+def random_subset(iterator, K):
+    result = []
+    N = 0
 
-        total_cals = fat_cals + carb_cals + protein_cals
+    for item in iterator:
+        N += 1
+        if len(result) < K:
+            result.append(item)
+        else:
+            s = int(random.random() * N)
+            if s < K:
+                result[s] = item
 
-        # fat_score = float(abs(1.0 - (fat_cals / req_fat_cals)))
-        # carb_score = float(abs(1.0 - (carb_cals / req_carb_cals)))
-        # protein_score =  float(abs(1.0 - (protein_cals / req_protein_cals)))
-
-        fat_score = abs(fat_cals - req_fat_cals) * 1.0
-        carb_score = abs(carb_cals - req_carb_cals) * 1.0
-        protein_score = abs(protein_cals - req_protein_cals) * 1.0
-        cal_score = abs(total_cals - req_calories) * 2.0
-
-        score = 4 * 10000 / (float(fat_score + carb_score + protein_score + cal_score))
-
-        return score
+    return result
 
 
 if __name__ == "__main__":
@@ -79,13 +113,14 @@ if __name__ == "__main__":
     n = 5
     random.shuffle(data)
 
-    p = Ingredient("BEST","cat",2492,208,92,208)
+    p = Ingredient("BEST", "cat", 2492, 208, 92, 208)
     Meal([p])
     meals = [Meal([p])]
 
-    for i in range(0, 1000, n):
-        ingredients = data[i:i + n]
+    for i in xrange(0, 1000):
+        ingredients = random_subset(data, random.randint(5, 10))
         meals.append(Meal(ingredients))
+
     print "{}\t{}\t{}\t{}\t{}".format("calories", "carbs", "fats", "protein", "score")
     for meal in meals:
         print "{0}\t{1} ({2:.2f}%)\t{3} ({4:.2f}%)\t{5} ({6:.2f}%)\t{7:.2f}".format(
